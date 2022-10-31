@@ -1,14 +1,8 @@
 # List the start up tasks. Learn more https://www.gitpod.io/docs/config-start-tasks/
 tasks:
-  - name: 'Download Quarto'
-    init: echo 'Downloading Quarto' # runs during prebuild
-    command: wget https://github.com/quarto-dev/quarto-cli/releases/download/v1.2.253/quarto-1.2.253-linux-amd64.deb
-  - name: 'Install Quarto'
-    init: echo 'Installing Quarto'
-    command: sudo dpkg -i quarto-1.2.253-linux-amd64.deb
-  - name: 'Remove Quarto'
-    init: echo 'Deleting Quarto'
-    command: rm -f quarto-1.2.253-linux-amd64.deb    
+  - name: 'Set-up Quarto'
+    init: wget https://github.com/quarto-dev/quarto-cli/releases/download/v1.2.253/quarto-1.2.253-linux-amd64.deb
+    command: sudo dpkg -i quarto-1.2.253-linux-amd64.deb & rm -f quarto-1.2.253-linux-amd64.deb
     
 # List the ports to expose. Learn more https://www.gitpod.io/docs/config-ports/
 ports:
