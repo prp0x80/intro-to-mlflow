@@ -1,0 +1,24 @@
+project:
+  type: site
+  title: "Introduction to MLflow"
+  output-dir: ./_site
+
+site:
+  title: "Kainos Data Academy"
+  sharing: [twitter, facebook, linkedin]
+  repo-url: https://github.com/prp0x80/intro-to-mlflow
+
+  navbar:
+    background: "dark"
+    right:
+      - text: "MLflow"
+        href: intro.ipynb
+      - icon: github
+        href: https://github.com/prp0x80/intro-to-mlflow
+
+format:
+  html:
+    theme: cosmo
+    code-background: true
+    css: styles.css
+    toc: true
