@@ -4,7 +4,7 @@ project:
   output-dir: ./_site
 
 site:
-  title: "Kainos Data Academy"
+  title: "Kainos - Data & AI Engineering Academy"
   sharing: [twitter, facebook, linkedin]
   repo-url: https://github.com/prp0x80/intro-to-mlflow
 
