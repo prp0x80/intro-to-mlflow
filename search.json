@@ -1,9 +1,9 @@
 [
   {
-    "objectID": "intro.html",
-    "href": "intro.html",
+    "objectID": "intro.html#traditional-software-vs.-machine-learning",
+    "href": "intro.html#traditional-software-vs.-machine-learning",
     "title": "Introduction to MLflow",
-    "section": "",
-    "text": "MLflow v1.30.0"
+    "section": "Traditional Software vs. Machine Learning",
+    "text": "Machine Learning Development is complex, mainly due to the evolution of model from conception through to deployment.\n\n\n\n\n\n\n\nTraditional Software\nMachine Learning\n\n\n\n\nGoal: Meet a functional specification\nGoal: Optimize metric (e.g. accuracy) Constantly experiment to improve it.\n\n\nQuality depends only on code\nQuality depends on input data and tuning parmeters\n\n\nTypically pick one software stack w/ fewer libraries and tools\nCompare + combine many libraries, models\n\n\nLimited deployment environments\nDiverse deployment environments"
   }
 ]
