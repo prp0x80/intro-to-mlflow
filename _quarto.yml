@@ -12,11 +12,11 @@ site:
     contents:
       - section: "Introduction"
         contents:
-          - ml_complexities.ipynb
-          - mlflow_intro.ipynb
+          - 01_ml_complexities.ipynb
+          - 02_mlflow_intro.ipynb
       - section: "Example"
         contents:
-          - mlflow.ipynb
+          - 03_mlflow.ipynb
   
 format:
   html:
