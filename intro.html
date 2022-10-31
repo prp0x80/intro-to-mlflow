@@ -3,7 +3,7 @@
   <meta charset="utf-8">
   <meta name="generator" content="quarto-0.2.232">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-  <title>Kainos Data Academy - Introduction to MLflow</title>
+  <title>Kainos - Data &amp; AI Engineering Academy – intro</title>
   <style>
     code{white-space: pre-wrap;}
     span.smallcaps{font-variant: small-caps;}
@@ -48,7 +48,7 @@
 <nav class="navbar navbar-expand-lg navbar-light ">
     <div class="container-fluid">
   <a class="navbar-brand" href="./index.html">
-    <span class="navbar-title">Kainos Data Academy</span>
+    <span class="navbar-title">Kainos - Data &amp; AI Engineering Academy</span>
   </a>
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
   <span class="navbar-toggler-icon"></span>
@@ -76,18 +76,50 @@
   <div id="quarto-toc-sidebar" class=" pt-0 col col-md-3 col-lg-2 d-none d-md-block sidebar sidebar-toc order-last"><nav id="TOC" role="doc-toc">
 <h2 id="toc-title">On this page</h2>
 <ul>
-<li><a href="#traditional-software-vs.-machine-learning" class="nav-link active" data-scroll-target="#traditional-software-vs.-machine-learning">Traditional Software vs.&nbsp;Machine Learning</a></li>
+<li><a href="#managing-the-complete-machine-learning-lifecycle-with-mlflow" class="nav-link active" data-scroll-target="#managing-the-complete-machine-learning-lifecycle-with-mlflow">Managing the complete Machine Learning Lifecycle with MLflow</a>
+<ul class="collapse">
+<li><a href="#what-you-will-learn" class="nav-link" data-scroll-target="#what-you-will-learn">What you will learn</a></li>
+<li><a href="#traditional-software-vs.-machine-learning" class="nav-link" data-scroll-target="#traditional-software-vs.-machine-learning">Traditional Software vs.&nbsp;Machine Learning</a></li>
+<li><a href="#machine-learning-lifecycle" class="nav-link" data-scroll-target="#machine-learning-lifecycle">Machine Learning Lifecycle</a></li>
+<li><a href="#challenges-in-managing-machine-learning-lifecycle" class="nav-link" data-scroll-target="#challenges-in-managing-machine-learning-lifecycle">Challenges in managing Machine Learning lifecycle</a></li>
+<li><a href="#introducing-mlflow" class="nav-link" data-scroll-target="#introducing-mlflow">Introducing MLflow</a></li>
+</ul></li>
 </ul>
 </nav></div>
   <div class="col mx-auto col-sm-12 col-md-9 col-lg-8 col-xl-7 px-lg-4 pe-xxl-4 ps-xxl-0">
 <main>
-<header id="title-block-header">
-<h1 class="title display-7">Introduction to MLflow</h1>
-</header>
 
+<section id="managing-the-complete-machine-learning-lifecycle-with-mlflow" class="level1">
+<h1>Managing the complete Machine Learning Lifecycle with MLflow</h1>
+<p>Machine Learning (ML) development brings many new complexities beyond the traditional software development lifecycle. Unlike in traditional software development, ML developers want to try multiple algorithms, tools and parameters to get the best results, and they need to track this information to reproduce work. In addition, developers need to use many distinct systems to productionize models.</p>
+<p>To solve these challenges, <a href="https://mlflow.org/">MLflow</a>, an open source project, simplifies the entire ML lifecycle. MLflow introduces simple abstractions to package reproducible projects<sup>*</sup>, track results, encapsulate models that can be used with many existing tools, and central repository to share models<sup>*</sup>, accelerating the ML lifecycle for organizations of any size.</p>
+<p><sup>*</sup><em>packaging projects and central model repository is not within the scope of this training</em></p>
+<section id="what-you-will-learn" class="level2">
+<h2 class="anchored" data-anchor-id="what-you-will-learn">What you will learn</h2>
+<p>How each component of MLflow helps address challenges of the ML lifecycle.</p>
+<ul>
+<li>How to use <a href="https://mlflow.org/docs/latest/tracking.html">MLflow Tracking</a> to record and query experiments: code, data, config, and results.</li>
+<li>How to use <a href="https://mlflow.org/docs/latest/models.html">MLflow Models</a> general format to send models to diverse deployment tools.</li>
+<li>How to use <a href="https://mlflow.org/docs/latest/tracking.html#tracking-ui">MLflow Tracking UI</a> to visually compare and contrast experimental runs with different tuning parameters and evaluate metrics.</li>
+</ul>
+<div class="callout-note callout callout-style-default callout-captioned">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-caption-container flex-fill">
+Note
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>There are four MLflow components, viz., MLflow Tracking, MLflow Models, MLflow Projects and MLflow Registry.<br>
+MLflow Models and MLflow Registry are out of scope for this training.</p>
+</div>
+</div>
+</section>
 <section id="traditional-software-vs.-machine-learning" class="level2">
 <h2 class="anchored" data-anchor-id="traditional-software-vs.-machine-learning">Traditional Software vs.&nbsp;Machine Learning</h2>
-<p>Machine Learning Development is complex, mainly due to the evolution of model from conception through to deployment.</p>
+<p>Developing machine learning applications is complex, and the complexity doesn’t necessarity strive from the fact that the theory behind the machine learning is difficult, or the math is difficult or the algorithm which are presented are difficult. Although there is some element of complexity, the machine learning frameworks makes it easier by abstracting away the details and exposing a simple class interface to initialise and train the model. In fact the default paramters gives pretty much a good baseline model to work with.</p>
 <table class="table">
 <colgroup>
 <col style="width: 46%">
@@ -118,8 +150,45 @@
 </tr>
 </tbody>
 </table>
+</section>
+<section id="machine-learning-lifecycle" class="level2">
+<h2 class="anchored" data-anchor-id="machine-learning-lifecycle">Machine Learning Lifecycle</h2>
+<p>Following are four stages of a machine learning lifecycle, there can be other stages is between, but these are the paramount stages -</p>
+<ul>
+<li><strong>Data Ingestion</strong> - Depending on the nature of data you might use one of the many data technologies for staging the data e.g., Hadoop, Kafka, S3, Delta lake, etc.</li>
+<li><strong>Data Preparation</strong> - As per requirement and ease of use you might use a library in different language for preparing the data e.g., Spark, Pandas, Scikit-Learn, R, Java, etc.</li>
+<li><strong>Training</strong> - Depending on the problem and type of data you might use different libraries or framework for training the model e.g., Scikit-Learn, TensorFlow, PyTorch, Xgboost, etc.</li>
+<li><strong>Deployment</strong> - Based on the type of model and how you want to serve the results there are many deployment options like Docker, Kubernetes, TensorFlow serving, Flask, etc.</li>
+</ul>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="mlops.png" class="img-fluid figure-img"></p>
+<p></p><figcaption aria-hidden="true" class="figure-caption">ML steps to serve the model as a prediction service</figcaption><p></p>
+</figure>
+</div>
+</section>
+<section id="challenges-in-managing-machine-learning-lifecycle" class="level2">
+<h2 class="anchored" data-anchor-id="challenges-in-managing-machine-learning-lifecycle">Challenges in managing Machine Learning lifecycle</h2>
+<ul>
+<li>Each stage has it’s own requirements and tools</li>
+<li>Some stages (data preparation and training) rely on tuning parameters</li>
+<li>Each stage has it’s own scaling requirements</li>
+<li>Ensuring the same model that yielded optimal performance is deployed</li>
+<li>Governance and provenance - how the model evolved, who used it, when it was used so on and so forth.</li>
+</ul>
+</section>
+<section id="introducing-mlflow" class="level2">
+<h2 class="anchored" data-anchor-id="introducing-mlflow">Introducing MLflow</h2>
+<p>Open Machine Learning platform</p>
+<ul>
+<li>ML Library and language agnostic framework - supports all popular ML libraries</li>
+<li>Supports both local and cloud development environments</li>
+<li>Simple and modular to use - can be simply infused into existing ML code</li>
+<li>Easy to get started, hence positive developer experience!</li>
+</ul>
 
 
+</section>
 </section>
 <script type="application/javascript">
 window.document.addEventListener("DOMContentLoaded", function (event) {
