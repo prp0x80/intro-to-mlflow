@@ -4,21 +4,22 @@ project:
   output-dir: ./_site
 
 site:
-  title: "Kainos - Data & AI Engineering Academy"
-  sharing: [twitter, facebook, linkedin]
-  repo-url: https://github.com/prp0x80/intro-to-mlflow
-
-  navbar:
-    background: "dark"
-    right:
-      - text: "MLflow"
-        href: intro.ipynb
-      - icon: github
-        href: https://github.com/prp0x80/intro-to-mlflow
-
+  title: "Data & AI Engineering Academy"
+  
+  sidebar:
+    style: "floating"
+    search: true
+    contents:
+      - section: "Introduction"
+        contents:
+          - ml_complexities.ipynb
+          - mlflow_intro.ipynb
+      - section: "Example"
+        contents:
+          - mlflow.ipynb
+  
 format:
   html:
     theme: cosmo
-    code-background: true
     css: styles.css
     toc: true
