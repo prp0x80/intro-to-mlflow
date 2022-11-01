@@ -4,7 +4,7 @@ project:
     - 01_ml_complexities.ipynb
     - 02_mlflow_intro.ipynb
     - 03_setup_mlflow.ipynb
-    - 04_mlflow.ipynb
+    - 04_mlflow_example.ipynb
   title: "Introduction to MLflow"
   output-dir: ./_site
 
@@ -13,16 +13,12 @@ site:
   
   sidebar:
     style: "floating"
-    search: true
+    search: false
     contents:
-      - section: "Introduction to MLflow"
-        contents:
-          - 01_ml_complexities.ipynb
-          - 02_mlflow_intro.ipynb
-          - 03_setup_mlflow.ipynb
-      - section: "MLflow in Practice"
-        contents:
-          - 04_mlflow.ipynb
+      - 01_ml_complexities.ipynb
+      - 02_mlflow_intro.ipynb
+      - 03_setup_mlflow.ipynb    
+      - 04_mlflow_example.ipynb
   
 format:
   html:
