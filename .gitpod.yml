@@ -5,9 +5,10 @@ tasks:
     init: >
       wget https://github.com/quarto-dev/quarto-cli/releases/download/v1.2.253/quarto-1.2.253-linux-amd64.deb && 
       sudo dpkg -i quarto-1.2.253-linux-amd64.deb && 
-      rm -f quarto-1.2.253-linux-amd64.deb
-    command: quarto -V
-  
+      rm -f quarto-1.2.253-linux-amd64.deb && 
+      quarto render .
+    command: quarto preview .
+
   - name: 'Dependencies'
     init: > 
       pip install -r requirements.txt && 
@@ -18,7 +19,7 @@ tasks:
     init: > 
       gp sync-await deps && 
       gp sync-done server
-    command: mlflow server --backend-store-uri /workspace/mlruns
+    command: mlflow server --backend-store-uri sqlite:////workspace/mlruns.db --default-artifact-root /workspace/mlruns
 
   - name: 'MLflow UI'
     init: gp sync-await server
