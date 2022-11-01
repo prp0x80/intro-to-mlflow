@@ -1,5 +1,9 @@
 project:
   type: site
+  render: 
+    - 01_ml_complexities.ipynb
+    - 02_mlflow_intro.ipynb
+    - 03_mlflow.ipynb
   title: "Introduction to MLflow"
   output-dir: ./_site
 
