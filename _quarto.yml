@@ -3,7 +3,8 @@ project:
   render: 
     - 01_ml_complexities.ipynb
     - 02_mlflow_intro.ipynb
-    - 03_mlflow.ipynb
+    - 03_setup_mlflow.ipynb
+    - 04_mlflow.ipynb
   title: "Introduction to MLflow"
   output-dir: ./_site
 
@@ -14,13 +15,14 @@ site:
     style: "floating"
     search: true
     contents:
-      - section: "Introduction"
+      - section: "Introduction to MLflow"
         contents:
           - 01_ml_complexities.ipynb
           - 02_mlflow_intro.ipynb
-      - section: "Example"
+          - 03_setup_mlflow.ipynb
+      - section: "MLflow in Practice"
         contents:
-          - 03_mlflow.ipynb
+          - 04_mlflow.ipynb
   
 format:
   html:
