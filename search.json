@@ -11,7 +11,7 @@
     "href": "01_ml_complexities.html#machine-learning-lifecycle",
     "title": "Data & AI Engineering Academy",
     "section": "Machine Learning Lifecycle",
-    "text": "Following are four stages of a machine learning lifecycle, there can be other stages is between, but these are the paramount stages -\n\nData Ingestion - Depending on the nature of data you might use one of the many data technologies for staging the data e.g., Hadoop, Kafka, S3, Delta lake, etc.\nData Preparation - As per requirement and ease of use you might use a library in different language for preparing the data e.g., Spark, Pandas, Scikit-Learn, R, Java, etc.\nTraining - Depending on the problem and type of data you might use different libraries or framework for training the model e.g., Scikit-Learn, TensorFlow, PyTorch, Xgboost, etc.\nDeployment - Based on the type of model and how you want to serve the results there are many deployment options like Docker, Kubernetes, TensorFlow serving, Flask, etc.\n\n\n\n\n\nMLOps"
+    "text": "Following are four stages of a machine learning lifecycle, there can be other stages is between, but these are the paramount stages -\n\nData Ingestion - Depending on the nature of data you might use one of the many data technologies for staging the data e.g., Hadoop, Kafka, S3, Delta lake, etc.\nData Preparation - As per requirement and ease of use you might use a library in different language for preparing the data e.g., Spark, Pandas, Scikit-Learn, R, Java, etc.\nTraining - Depending on the problem and type of data you might use different libraries or framework for training the model e.g., Scikit-Learn, TensorFlow, PyTorch, Xgboost, etc.\nDeployment - Based on the type of model and how you want to serve the results there are many deployment options like Docker, Kubernetes, TensorFlow serving, Flask, etc."
   },
   {
     "objectID": "01_ml_complexities.html#challenges-in-managing-machine-learning-lifecycle",
@@ -25,7 +25,7 @@
     "href": "02_mlflow_intro.html#mlflow-components",
     "title": "Data & AI Engineering Academy",
     "section": "MLflow Components",
-    "text": "MLflow currently offers four components:\n\nMLflow Tracking - Record and query experiments: code, data, config, and results\nMLflow Projects - Package data science code in a format to reproduce runs on any platform\nMLflow Models - Deploy machine learning models in diverse serving environments\nMLflow Registry - Store, annotate, discover, and manage models in a central repository\n\n\n\n\n\n\n\nNote\n\n\n\nMLflow Models and MLflow Registry are not within the scope of this training.\n\n\n\nMLflow Tracking\nKey concepts in MLflow Tracking\n\nParameters: key-value inputs to your code\nMetrics: numeric values (can update over time)\nTags and Notes: information about a run\nArtifacts: files, data, and models\nSource: what code ran?\nVersion: what of the code?\nRun: an instance of code that runs by MLflow\nExperiment: {Run, …, Run}"
+    "text": "MLflow currently offers four components:\n\n\n\n\n\n\n\nNote\n\n\n\nMLflow Models and MLflow Registry are not within the scope of this training.\n\n\n\nMLflow Tracking\nKey concepts in MLflow Tracking\n\nParameters: key-value inputs to your code\nMetrics: numeric values (can update over time)\nTags and Notes: information about a run\nArtifacts: files, data, and models\nSource: what code ran?\nVersion: what of the code?\nRun: an instance of code that runs by MLflow\nExperiment: {Run, …, Run}"
   },
   {
     "objectID": "03_mlflow.html#what-you-will-learn",
