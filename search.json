@@ -1,12 +1,5 @@
 [
   {
-    "objectID": "02_mlflow_intro.html#mlflow-components",
-    "href": "02_mlflow_intro.html#mlflow-components",
-    "title": "Data & AI Engineering Academy",
-    "section": "MLflow Components",
-    "text": "MLflow currently offers four components:\n\nMLflow Tracking - Record and query experiments: code, data, config, and results\nMLflow Projects - Package data science code in a format to reproduce runs on any platform\nMLflow Models - Deploy machine learning models in diverse serving environments\nMLflow Registry - Store, annotate, discover, and manage models in a central repository\n\n\n\n\n\n\n\nNote\n\n\n\nMLflow Models and MLflow Registry are not within the scope of this training.\n\n\n\nMLflow Tracking\nKey concepts in MLflow Tracking\n\nParameters: key-value inputs to your code\nMetrics: numeric values (can update over time)\nTags and Notes: information about a run\nArtifacts: files, data, and models\nSource: what code ran?\nVersion: what of the code?\nRun: an instance of code that runs by MLflow\nExperiment: {Run, …, Run}"
-  },
-  {
     "objectID": "01_ml_complexities.html#traditional-software-vs.-machine-learning",
     "href": "01_ml_complexities.html#traditional-software-vs.-machine-learning",
     "title": "Data & AI Engineering Academy",
@@ -26,6 +19,13 @@
     "title": "Data & AI Engineering Academy",
     "section": "Challenges in managing Machine Learning lifecycle",
     "text": "Each stage has it’s own requirements and tools\nSome stages (data preparation and training) rely on tuning parameters\nEach stage has it’s own scaling requirements\nEnsuring the same model that yielded optimal performance is deployed\nGovernance and provenance - how the model evolved, who used it, when it was used so on and so forth.\n\nTo solve these challenges, MLflow, an open source project, simplifies the entire ML lifecycle. MLflow introduces simple abstractions to package reproducible projects, track results, encapsulate models that can be used with many existing tools, and central repository to share models, accelerating the ML lifecycle for organizations of any size."
+  },
+  {
+    "objectID": "02_mlflow_intro.html#mlflow-components",
+    "href": "02_mlflow_intro.html#mlflow-components",
+    "title": "Data & AI Engineering Academy",
+    "section": "MLflow Components",
+    "text": "MLflow currently offers four components:\n\nMLflow Tracking - Record and query experiments: code, data, config, and results\nMLflow Projects - Package data science code in a format to reproduce runs on any platform\nMLflow Models - Deploy machine learning models in diverse serving environments\nMLflow Registry - Store, annotate, discover, and manage models in a central repository\n\n\n\n\n\n\n\nNote\n\n\n\nMLflow Models and MLflow Registry are not within the scope of this training.\n\n\n\nMLflow Tracking\nKey concepts in MLflow Tracking\n\nParameters: key-value inputs to your code\nMetrics: numeric values (can update over time)\nTags and Notes: information about a run\nArtifacts: files, data, and models\nSource: what code ran?\nVersion: what of the code?\nRun: an instance of code that runs by MLflow\nExperiment: {Run, …, Run}"
   },
   {
     "objectID": "03_mlflow.html#what-you-will-learn",
