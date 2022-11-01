@@ -21,13 +21,6 @@
     "text": "Each stage has it’s own requirements and tools\nSome stages (data preparation and training) rely on tuning parameters\nEach stage has it’s own scaling requirements\nEnsuring the same model that yielded optimal performance is deployed\nGovernance and provenance - how the model evolved, who used it, when it was used so on and so forth.\n\nTo solve these challenges, MLflow, an open source project, simplifies the entire ML lifecycle. MLflow introduces simple abstractions to package reproducible projects, track results, encapsulate models that can be used with many existing tools, and central repository to share models, accelerating the ML lifecycle for organizations of any size."
   },
   {
-    "objectID": "02_mlflow_intro.html#install",
-    "href": "02_mlflow_intro.html#install",
-    "title": "Data & AI Engineering Academy",
-    "section": "Install",
-    "text": "The easiest way to install MLflow is using pip as follows -\n!pip install --upgrade pip\n!pip install --quiet mlflow\nMLflow comes with a rich CLI that provides a simple interface to various functionality in MLflow. You can use the CLI to run projects, start the tracking UI, create and list experiments, download run artifacts, serve MLflow Python Function and scikit-learn models, and serve models on Microsoft Azure Machine Learning and Amazon SageMaker.\n\n!mlflow --help\n\nUsage: mlflow [OPTIONS] COMMAND [ARGS]...\n\nOptions:\n  --version  Show the version and exit.\n  --help     Show this message and exit.\n\nCommands:\n  artifacts    Upload, list, and download artifacts from an MLflow...\n  azureml      Serve models on Azure ML.\n  db           Commands for managing an MLflow tracking database.\n  deployments  Deploy MLflow models to custom targets.\n  experiments  Manage experiments.\n  gc           Permanently delete runs in the `deleted` lifecycle stage.\n  models       Deploy MLflow models locally.\n  pipelines    Run MLflow Pipelines and inspect pipeline results.\n  run          Run an MLflow project from the given URI.\n  runs         Manage runs.\n  sagemaker    Serve models on SageMaker.\n  server       Run the MLflow tracking server.\n  ui           Launch the MLflow tracking UI for local viewing of run..."
-  },
-  {
     "objectID": "02_mlflow_intro.html#mlflow-components",
     "href": "02_mlflow_intro.html#mlflow-components",
     "title": "Data & AI Engineering Academy",
@@ -42,8 +35,43 @@
     "text": "Since the MLflow client can interface with a variety of backend and artifact storage configurations. We will look a three common scenarios:\n\n\n\nScenario 1 - MLflow on localhost\n\n\n\n\n\nScenario 2 - MLflow on localhost with backend store as an SQLAlchemy compatible database type: SQLite\n\n\n\n\n\nScenario 3 - Tracking server launched at localhost: mlflow server –backend-store-uri /workspace/mlruns"
   },
   {
-    "objectID": "03_mlflow.html#what-you-will-learn",
-    "href": "03_mlflow.html#what-you-will-learn",
+    "objectID": "03_setup_mlflow.html#install",
+    "href": "03_setup_mlflow.html#install",
+    "title": "Data & AI Engineering Academy",
+    "section": "Install",
+    "text": "The easiest way to install MLflow is using pip as follows -\n\n\n\n\n\n\nNote\n\n\n\nMake sure you have created and activated the virtual environment using the python virtual environment manager of your choice.\n\n\n!pip install --upgrade pip\n!pip install --quiet mlflow\nMLflow comes with a rich CLI that provides a simple interface to various functionality in MLflow. You can use the CLI to run projects, start the tracking UI, create and list experiments, download run artifacts, serve MLflow Python Function and scikit-learn models, and serve models on Microsoft Azure Machine Learning and Amazon SageMaker.\n!mlflow --help\nIn the next section, we will use mlflow server <args> and mlflow ui commands to demonstrate different scenarios."
+  },
+  {
+    "objectID": "03_setup_mlflow.html#scenario1",
+    "href": "03_setup_mlflow.html#scenario1",
+    "title": "Data & AI Engineering Academy",
+    "section": "Scenario#1",
+    "text": "MLflow on localhost\n\nThis is the most basic set up, where both backend and artifact store are set to local file store. It’s the default mode, so we don’t have to set any parameters while starting the tracking server.\nStart MLflow tracking server without any arguments.\nmlflow server"
+  },
+  {
+    "objectID": "03_setup_mlflow.html#scenario2",
+    "href": "03_setup_mlflow.html#scenario2",
+    "title": "Data & AI Engineering Academy",
+    "section": "Scenario#2",
+    "text": "MLflow on localhost with backend store as an SQLAlchemy compatible database type: SQLite\n\nIn this case, artifacts are stored under a local directory, and MLflow entities are inserted in a SQLite database file mlruns.db.\nStart MLflow tracking server by specifying appropriate values for --backend-store-uri and --default-artifact-root\nmlflow server --backend-store-uri sqlite:////workspace/mlruns.db \\\n              --default-artifact-root /workspace/mlruns"
+  },
+  {
+    "objectID": "03_setup_mlflow.html#scenario3",
+    "href": "03_setup_mlflow.html#scenario3",
+    "title": "Data & AI Engineering Academy",
+    "section": "Scenario#3",
+    "text": "Tracking server launched at localhost\n\nSimilar to scenario 1 but a tracking server is launched, listening for REST request calls at the default port 5000.\nStart MLflow tracking server by specifying local file path value for --backend-store-uri\nmlflow server --backend-store-uri /workspace/mlrun"
+  },
+  {
+    "objectID": "03_setup_mlflow.html#mlflow-tracking-ui",
+    "href": "03_setup_mlflow.html#mlflow-tracking-ui",
+    "title": "Data & AI Engineering Academy",
+    "section": "MLflow Tracking UI",
+    "text": "After the scenario is set up, you can launch MLflow tracking UI by typing mlflow ui --port 6000 in a separate terminal.\nAt this point you would have MLflow tracking server running on port 5000 (http://localhost:5000) and MLflow Tracking UI running on port 6000. MLFlow Tracking UI communicates with the server to present results of each experiment from the set storage location. It also, allows to compare results across runs and experiments."
+  },
+  {
+    "objectID": "04_mlflow.html#what-you-will-learn",
+    "href": "04_mlflow.html#what-you-will-learn",
     "title": "Data & AI Engineering Academy",
     "section": "What you will learn",
     "text": "How each component of MLflow helps address challenges of the ML lifecycle.\n\nHow to use MLflow Tracking to record and query experiments: code, data, config, and results.\nHow to use MLflow Models general format to send models to diverse deployment tools.\nHow to use MLflow Tracking UI to visually compare and contrast experimental runs with different tuning parameters and evaluate metrics."
