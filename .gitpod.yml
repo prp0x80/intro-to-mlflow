@@ -22,4 +22,4 @@ tasks:
 
   - name: 'MLflow UI'
     init: gp sync-await server
-    command: mlflow ui
+    command: mlflow ui --port 6000
