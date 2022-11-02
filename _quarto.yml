@@ -8,12 +8,26 @@ project:
   title: "Introduction to MLflow"
   output-dir: ./_site
 
-site:
+website:
   title: "Data & AI Engineering Academy"
+  favicon: ./images/favicon.ico
+  site-url: https://prp0x80.github.io/intro-to-mlflow
+  repo-url: https://github.com/prp0x80/intro-to-mlflow
+  repo-actions: [edit, issue]
+  page-footer:
+    left: |
+      Powered by [Quarto](https://quarto.org/)
+    right:
+      - icon: twitter
+        href: https://twitter.com/KainosAcademy
+        aria-label: Kainos Academy Twitter
+      - icon: github
+        href: https://github.com/prp0x80/intro-to-mlflow
+        aria-label: Intro to MLflow
 
   sidebar:
     style: "floating"
-    search: false
+    search: true
     contents:
       - 01_ml_complexities.ipynb
       - 02_mlflow_intro.ipynb
