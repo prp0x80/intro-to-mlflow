@@ -15,20 +15,15 @@ repos:
         files: \.ipynb$
         entry: nbqa isort
       - id: nbqa-black
-  - repo: local
+  - repo: https://github.com/psf/black
+    rev: 22.10.0
     hooks:
       - id: black
-        name: black
-        files: \.py$
-        language: python
-        entry: black
-      - id: flake8
-        name: flake8
-        files: \.py$
-        language: python
-        entry: flake8
+  - repo: https://github.com/PyCQA/isort
+    rev: 5.10.1
+    hooks:
       - id: isort
-        name: isort
-        files: \.py$
-        language: python
-        entry: isort
+  - repo: https://github.com/PyCQA/flake8
+    rev: 5.0.4
+    hooks:
+      - id: flake8
