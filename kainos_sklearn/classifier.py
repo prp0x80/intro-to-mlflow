@@ -98,8 +98,8 @@ def train(
             ("classifier", classifier),
         ]
     )
-    model = pipeline.fit(X, y)
-    return model, labels_encoder, pipeline
+    pipeline.fit(X, y)
+    return pipeline, labels_encoder
 
 
 def evaluate(

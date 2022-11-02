@@ -1,25 +1,25 @@
 project:
   type: site
-  render: 
+  render:
     - 01_ml_complexities.ipynb
     - 02_mlflow_intro.ipynb
-    - 03_setup_mlflow.ipynb
+    - 03_mlflow_setup.ipynb
     - 04_mlflow_example.ipynb
   title: "Introduction to MLflow"
   output-dir: ./_site
 
 site:
   title: "Data & AI Engineering Academy"
-  
+
   sidebar:
     style: "floating"
     search: false
     contents:
       - 01_ml_complexities.ipynb
       - 02_mlflow_intro.ipynb
-      - 03_setup_mlflow.ipynb    
+      - 03_mlflow_setup.ipynb
       - 04_mlflow_example.ipynb
-  
+
 format:
   html:
     theme: cosmo
