@@ -93,6 +93,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <script src="site_libs/quarto-search/fuse.min.js"></script>
 <script src="site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="./">
+<link href="././images/favicon.ico" rel="icon">
 <script src="site_libs/quarto-html/quarto.js"></script>
 <script src="site_libs/quarto-html/popper.min.js"></script>
 <script src="site_libs/quarto-html/tippy.umd.min.js"></script>
@@ -151,6 +152,11 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
       <a href="./">Data &amp; AI Engineering Academy</a> 
     </div>
       </div>
+      <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+      </div>
     <div class="sidebar-menu-container"> 
     <ul class="list-unstyled mt-1">
         <li class="sidebar-item">
@@ -195,7 +201,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
   <li><a href="#mlflow-model-serving" id="toc-mlflow-model-serving" class="nav-link" data-scroll-target="#mlflow-model-serving">MLflow Model Serving</a></li>
   </ul></li>
   </ul>
-</nav>
+<div class="toc-actions"><div><i class="bi bi-github"></i></div><div class="action-links"><p><a href="https://github.dev/prp0x80/intro-to-mlflow/blob/main/04_mlflow_example.ipynb" class="toc-action">Edit this page</a></p><p><a href="https://github.com/prp0x80/intro-to-mlflow/issues/new" class="toc-action">Report an issue</a></p></div></div></nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
@@ -442,7 +448,7 @@ f1_score: 0.29</code></pre>
 ├── conda.yaml
 ├── python_env.yaml
 └── requirements.txt</code></pre>
-<p>The <code>MLmodel</code> file stores the information about all the flavours in which the saved model is available. In our cas, the file describes two flavours.</p>
+<p>The <code>MLmodel</code> file stores the information about all the flavours in which the saved model is available. In our case, the file describes two flavours.</p>
 <div class="sourceCode" id="cb9"><pre class="sourceCode yml code-with-copy"><code class="sourceCode yaml"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">artifact_path</span><span class="kw">:</span><span class="at"> hr-attrition-model</span></span>
 <span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="fu">flavors</span><span class="kw">:</span></span>
 <span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">python_function</span><span class="kw">:</span></span>
@@ -615,6 +621,27 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 });
 </script>
 </div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+    <div class="nav-footer-left">Powered by <a href="https://quarto.org/">Quarto</a></div>   
+    <div class="nav-footer-right">
+      <ul class="footer-items list-unstyled">
+    <li class="nav-item compact">
+    <a class="nav-link" href="https://twitter.com/KainosAcademy">
+      <i class="bi bi-twitter" role="img" aria-label="Kainos Academy Twitter">
+</i> 
+    </a>
+  </li>  
+    <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/prp0x80/intro-to-mlflow">
+      <i class="bi bi-github" role="img" aria-label="Intro to MLflow">
+</i> 
+    </a>
+  </li>  
+</ul>
+    </div>
+  </div>
+</footer>
 
 
 
