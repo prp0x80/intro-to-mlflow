@@ -154,11 +154,12 @@
   <div id="quarto-toc-sidebar" class=" pt-0 col col-md-3 col-lg-2 d-none d-md-block sidebar sidebar-toc order-last"><nav id="TOC" role="doc-toc">
 <h2 id="toc-title">On this page</h2>
 <ul>
-<li><a href="#training-employee-attrition-detection-model" class="nav-link active" data-scroll-target="#training-employee-attrition-detection-model">Training employee attrition detection model</a>
-<ul class="collapse">
+<li><a href="#employee-attrition-detection" class="nav-link active" data-scroll-target="#employee-attrition-detection">Employee Attrition Detection</a></li>
 <li><a href="#import-libraries" class="nav-link" data-scroll-target="#import-libraries">Import libraries</a></li>
-<li><a href="#predict" class="nav-link" data-scroll-target="#predict">Predict</a></li>
-</ul></li>
+<li><a href="#load-data" class="nav-link" data-scroll-target="#load-data">Load data</a></li>
+<li><a href="#data-config" class="nav-link" data-scroll-target="#data-config">Data Config</a></li>
+<li><a href="#ml-config" class="nav-link" data-scroll-target="#ml-config">ML Config</a></li>
+<li><a href="#experiments" class="nav-link" data-scroll-target="#experiments">Experiments</a></li>
 </ul>
 </nav></div>
   <div class="col mx-auto col-sm-12 col-md-9 col-lg-7 col-xl-7 px-lg-4 pe-xxl-4 ps-xxl-3">
@@ -167,212 +168,111 @@
 <h1 class="title d-none d-lg-block display-7">MLflow in Practice</h1>
 </header>
 
-<section id="training-employee-attrition-detection-model" class="level2">
-<h2 class="anchored" data-anchor-id="training-employee-attrition-detection-model">Training employee attrition detection model</h2>
-<p><strong>Objective</strong><br> Predict if an employee is likely to quit and identify the factors responsible - to allow HR to intervene on time and remedy the situation to prevent attrition.</p>
-<blockquote class="blockquote">
-<p>While some level of attrition in a company is inevitable, minimizing it and being prepared for the cases that cannot be helped will significantly help improve the operations of most businesses.</p>
-</blockquote>
-<p><strong>Data</strong><br> The data set presents an employee survey from IBM, indicating if there is attrition or not. The data set contains approximately 1500 entries. Given the limited size of the data set, the model should only be expected to provide modest improvement in indentification of attrition vs a random allocation of probability of attrition.</p>
-<section id="import-libraries" class="level3">
-<h3 class="anchored" data-anchor-id="import-libraries">Import libraries</h3>
-<div class="sourceCode" id="cb1"><pre class="sourceCode python cell-code code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> typing <span class="im">import</span> Tuple</span>
+<p>In this section, we will apply the MLflow concepts we have learned so far.</p>
+<section id="employee-attrition-detection" class="level2">
+<h2 class="anchored" data-anchor-id="employee-attrition-detection">Employee Attrition Detection</h2>
+<p><strong>Objective</strong></p>
+<p>Predict if an employee is likely to quit and identify the factors responsible - to allow HR to intervene on time and remedy the situation to prevent attrition. While some level of attrition in a company is inevitable, minimizing it and being prepared for the cases that cannot be helped will significantly help improve the operations of most businesses.</p>
+<p><strong>Data</strong></p>
+<p>The data set presents an employee survey from IBM, indicating if there is attrition or not. The data set contains approximately 1500 entries. Given the limited size of the data set, the model should only be expected to provide modest improvement in indentification of attrition vs a random allocation of probability of attrition.</p>
+</section>
+<section id="import-libraries" class="level2">
+<h2 class="anchored" data-anchor-id="import-libraries">Import libraries</h2>
+<p>MLflow supports wide variety of ML frameworks. For this example we will use the simple and popular <code>sklearn</code> library for training a model. Additionally, for clarity, we have abstracted the steps for ML classification into a <code>kainos_sklearn</code> package.</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode python cell-code code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> warnings</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> mlflow</span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.compose <span class="im">import</span> ColumnTransformer</span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.metrics <span class="im">import</span> (</span>
-<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>    accuracy_score,</span>
-<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>    confusion_matrix,</span>
-<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>    f1_score,</span>
-<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>    plot_confusion_matrix,</span>
-<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>    precision_score,</span>
-<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>    recall_score,</span>
-<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.model_selection <span class="im">import</span> train_test_split</span>
-<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.neural_network <span class="im">import</span> MLPClassifier</span>
-<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.pipeline <span class="im">import</span> Pipeline</span>
-<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.preprocessing <span class="im">import</span> LabelEncoder, OneHotEncoder, StandardScaler</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<section id="load-data" class="level4">
-<h4 class="anchored" data-anchor-id="load-data">Load Data</h4>
-<div class="sourceCode" id="cb2"><pre class="sourceCode python cell-code code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> load_csv_data(path: <span class="bu">str</span>) <span class="op">-&gt;</span> pd.DataFrame:</span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""Loads the csv file from path and returns pandas dataframe"""</span></span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">try</span>:</span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>        data <span class="op">=</span> pd.read_csv(path)</span>
-<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> data</span>
-<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>    <span class="cf">except</span>:</span>
-<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>        <span class="cf">raise</span> <span class="pp">Exception</span>(<span class="ss">f"Error while loading the data from </span><span class="sc">{</span>path<span class="sc">}</span><span class="ss">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> mlflow</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.ensemble <span class="im">import</span> RandomForestClassifier</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.neural_network <span class="im">import</span> MLPClassifier</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.preprocessing <span class="im">import</span> (</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>    MinMaxScaler,</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>    OneHotEncoder,</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>    OrdinalEncoder,</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>    RobustScaler,</span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>    StandardScaler,</span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> kainos_sklearn.classifier <span class="im">import</span> <span class="op">*</span></span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>warnings.filterwarnings(action<span class="op">=</span><span class="st">"ignore"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </section>
-<section id="train-test-split" class="level4">
-<h4 class="anchored" data-anchor-id="train-test-split">Train-test split</h4>
-<div class="sourceCode" id="cb3"><pre class="sourceCode python cell-code code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> split_data(</span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>    df: pd.DataFrame, test_size: <span class="bu">float</span> <span class="op">=</span> <span class="fl">0.2</span>, random_state: <span class="bu">int</span> <span class="op">=</span> <span class="dv">42</span></span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>) <span class="op">-&gt;</span> Tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame, pd.DataFrame]:</span>
-<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""Splits the input data and returns training and test sets"""</span></span>
-<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>    drop_columns <span class="op">=</span> [</span>
-<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>        <span class="st">"EmployeeNumber"</span>,</span>
-<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>        <span class="st">"EmployeeCount"</span>,</span>
-<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>        <span class="st">"Over18"</span>,</span>
-<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>        <span class="st">"StandardHours"</span>,</span>
-<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>        <span class="st">"Attrition"</span>,</span>
-<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>    ]</span>
-<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>    label_column <span class="op">=</span> <span class="st">"Attrition"</span></span>
-<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>    features <span class="op">=</span> df.drop(columns<span class="op">=</span>drop_columns)</span>
-<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>    labels <span class="op">=</span> df[label_column]</span>
-<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a>    train_features, test_features, train_labels, test_labels <span class="op">=</span> train_test_split(</span>
-<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a>        features,</span>
-<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a>        labels,</span>
-<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a>        test_size<span class="op">=</span>test_size,</span>
-<span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a>        random_state<span class="op">=</span>random_state,</span>
-<span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a>        stratify<span class="op">=</span>labels,</span>
-<span id="cb3-21"><a href="#cb3-21" aria-hidden="true" tabindex="-1"></a>    )</span>
-<span id="cb3-22"><a href="#cb3-22" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> train_features, test_features, train_labels, test_labels</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<section id="load-data" class="level2">
+<h2 class="anchored" data-anchor-id="load-data">Load data</h2>
+<p>The hr attrition data is available in csv format, so we can easily load it into a pandas dataframe.</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode python cell-code code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>data <span class="op">=</span> load_csv(<span class="st">"./data/hr_attrition.csv"</span>)</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>n_rows, n_cols <span class="op">=</span> data.shape</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Rows: </span><span class="sc">{</span>n_rows<span class="sc">}</span><span class="ss">, Columns: </span><span class="sc">{</span>n_cols<span class="sc">}</span><span class="ss">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </section>
-<section id="training" class="level4">
-<h4 class="anchored" data-anchor-id="training">Training</h4>
-<p>Using Multilayer perceptron algorithm</p>
-<div class="sourceCode" id="cb4"><pre class="sourceCode python cell-code code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> train(</span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>    train_features: pd.DataFrame,</span>
-<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>    train_labels: pd.DataFrame,</span>
-<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>    random_state: <span class="bu">int</span> <span class="op">=</span> <span class="dv">42</span>,</span>
-<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>    <span class="op">**</span>kwargs,</span>
-<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>) <span class="op">-&gt;</span> Tuple[LabelEncoder, Pipeline]:</span>
-<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""Preprocesses the data and trains a model using sklearn pipeline"""</span></span>
-<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>    <span class="co"># label encoder</span></span>
-<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>    label_encoder <span class="op">=</span> LabelEncoder()</span>
-<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>    label_encoder.fit(train_labels.values)</span>
-<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>    train_labels <span class="op">=</span> label_encoder.transform(train_labels)</span>
-<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>    <span class="co"># pipeline</span></span>
-<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>    categorical_columns <span class="op">=</span> [</span>
-<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a>        <span class="st">"BusinessTravel"</span>,</span>
-<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a>        <span class="st">"Department"</span>,</span>
-<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a>        <span class="st">"Education"</span>,</span>
-<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a>        <span class="st">"EducationField"</span>,</span>
-<span id="cb4-18"><a href="#cb4-18" aria-hidden="true" tabindex="-1"></a>        <span class="st">"EnvironmentSatisfaction"</span>,</span>
-<span id="cb4-19"><a href="#cb4-19" aria-hidden="true" tabindex="-1"></a>        <span class="st">"Gender"</span>,</span>
-<span id="cb4-20"><a href="#cb4-20" aria-hidden="true" tabindex="-1"></a>        <span class="st">"JobInvolvement"</span>,</span>
-<span id="cb4-21"><a href="#cb4-21" aria-hidden="true" tabindex="-1"></a>        <span class="st">"JobLevel"</span>,</span>
-<span id="cb4-22"><a href="#cb4-22" aria-hidden="true" tabindex="-1"></a>        <span class="st">"JobRole"</span>,</span>
-<span id="cb4-23"><a href="#cb4-23" aria-hidden="true" tabindex="-1"></a>        <span class="st">"JobSatisfaction"</span>,</span>
-<span id="cb4-24"><a href="#cb4-24" aria-hidden="true" tabindex="-1"></a>        <span class="st">"MaritalStatus"</span>,</span>
-<span id="cb4-25"><a href="#cb4-25" aria-hidden="true" tabindex="-1"></a>        <span class="st">"OverTime"</span>,</span>
-<span id="cb4-26"><a href="#cb4-26" aria-hidden="true" tabindex="-1"></a>        <span class="st">"PerformanceRating"</span>,</span>
-<span id="cb4-27"><a href="#cb4-27" aria-hidden="true" tabindex="-1"></a>        <span class="st">"RelationshipSatisfaction"</span>,</span>
-<span id="cb4-28"><a href="#cb4-28" aria-hidden="true" tabindex="-1"></a>        <span class="st">"StockOptionLevel"</span>,</span>
-<span id="cb4-29"><a href="#cb4-29" aria-hidden="true" tabindex="-1"></a>        <span class="st">"WorkLifeBalance"</span>,</span>
-<span id="cb4-30"><a href="#cb4-30" aria-hidden="true" tabindex="-1"></a>    ]</span>
-<span id="cb4-31"><a href="#cb4-31" aria-hidden="true" tabindex="-1"></a>    numerical_columns <span class="op">=</span> train_features.select_dtypes(include<span class="op">=</span><span class="st">"int64"</span>).columns</span>
-<span id="cb4-32"><a href="#cb4-32" aria-hidden="true" tabindex="-1"></a>    transformers <span class="op">=</span> [</span>
-<span id="cb4-33"><a href="#cb4-33" aria-hidden="true" tabindex="-1"></a>        (<span class="st">"one_hot_encoder"</span>, OneHotEncoder(), categorical_columns),</span>
-<span id="cb4-34"><a href="#cb4-34" aria-hidden="true" tabindex="-1"></a>        (<span class="st">"scaler"</span>, StandardScaler(), numerical_columns),</span>
-<span id="cb4-35"><a href="#cb4-35" aria-hidden="true" tabindex="-1"></a>    ]</span>
-<span id="cb4-36"><a href="#cb4-36" aria-hidden="true" tabindex="-1"></a>    preprocessing <span class="op">=</span> ColumnTransformer(transformers<span class="op">=</span>transformers)</span>
-<span id="cb4-37"><a href="#cb4-37" aria-hidden="true" tabindex="-1"></a>    classifier <span class="op">=</span> MLPClassifier(</span>
-<span id="cb4-38"><a href="#cb4-38" aria-hidden="true" tabindex="-1"></a>        max_iter<span class="op">=</span>kwargs.get(<span class="st">"max_iter"</span>, <span class="dv">500</span>),</span>
-<span id="cb4-39"><a href="#cb4-39" aria-hidden="true" tabindex="-1"></a>        activation<span class="op">=</span>kwargs.get(<span class="st">"activation"</span>, <span class="st">"tanh"</span>),</span>
-<span id="cb4-40"><a href="#cb4-40" aria-hidden="true" tabindex="-1"></a>        solver<span class="op">=</span>kwargs.get(<span class="st">"solver"</span>, <span class="st">"sgd"</span>),</span>
-<span id="cb4-41"><a href="#cb4-41" aria-hidden="true" tabindex="-1"></a>        random_state<span class="op">=</span>random_state,</span>
-<span id="cb4-42"><a href="#cb4-42" aria-hidden="true" tabindex="-1"></a>    )</span>
-<span id="cb4-43"><a href="#cb4-43" aria-hidden="true" tabindex="-1"></a>    model <span class="op">=</span> Pipeline(</span>
-<span id="cb4-44"><a href="#cb4-44" aria-hidden="true" tabindex="-1"></a>        steps<span class="op">=</span>[(<span class="st">"preprocessing"</span>, preprocessing), (<span class="st">"classifier"</span>, classifier)]</span>
-<span id="cb4-45"><a href="#cb4-45" aria-hidden="true" tabindex="-1"></a>    )</span>
-<span id="cb4-46"><a href="#cb4-46" aria-hidden="true" tabindex="-1"></a>    <span class="co"># model building - fit</span></span>
-<span id="cb4-47"><a href="#cb4-47" aria-hidden="true" tabindex="-1"></a>    model.fit(train_features, train_labels)</span>
-<span id="cb4-48"><a href="#cb4-48" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> label_encoder, model</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<section id="data-config" class="level2">
+<h2 class="anchored" data-anchor-id="data-config">Data Config</h2>
+<p>The outcome of machine learning algorithm also depends on the tuning we apply to the data, hence it’s important to keep a track of those too.</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode python cell-code code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>drop_cols <span class="op">=</span> [</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>    <span class="st">"EmployeeNumber"</span>,</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>    <span class="st">"EmployeeCount"</span>,</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Over18"</span>,</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>    <span class="st">"StandardHours"</span>,</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Attrition"</span>,</span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>]</span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>label_col <span class="op">=</span> <span class="st">"Attrition"</span></span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>test_size <span class="op">=</span> <span class="fl">0.2</span></span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>category_threshold <span class="op">=</span> <span class="dv">8</span></span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>feature_encoder <span class="op">=</span> OrdinalEncoder</span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>feature_scaler <span class="op">=</span> RobustScaler</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </section>
-<section id="metrics" class="level4">
-<h4 class="anchored" data-anchor-id="metrics">Metrics</h4>
-<p><strong>Accuracy</strong> * Proportion of true results among the total number of cases * Accuracy is a valid choice of evaluation for classification problems which are well balanced and not skewed or No class imbalance</p>
-<p><strong>Precision</strong> * Proportion of predicted positives are truly positives * Precision is a valid choice of evaluation metric when we want to be very sure of our prediction</p>
-<p><strong>Recall</strong> * What proportion of actual Positives is correctly classified? * Recall is a valid choice of evaluation metric when we want to capture as many positives as possible * For example: If we are building a system to predict if a person has cancer or not, we want to capture the disease even if we are not very sure.</p>
-<p><strong>F1-score</strong> * The F1 score is a number between 0 and 1 and is the harmonic mean of precision and recall * We use this when we want to have a model with both good precision and recall * If you are a police inspector and you want to catch criminals, you want to be sure that the person you catch is a criminal (Precision) and you also want to capture as many criminals (Recall) as possible. The F1 score manages this tradeoff.</p>
-<div class="sourceCode" id="cb5"><pre class="sourceCode python cell-code code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> evaluate(</span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>    model: Pipeline,</span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>    label_encoder: LabelEncoder,</span>
-<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>    test_features: pd.DataFrame,</span>
-<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>    test_labels: pd.DataFrame,</span>
-<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>) <span class="op">-&gt;</span> Tuple[<span class="bu">float</span>, <span class="bu">float</span>, <span class="bu">float</span>, <span class="bu">float</span>]:</span>
-<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""Evaluates the trained model using the held out test set"""</span></span>
-<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>    predictions <span class="op">=</span> model.predict(test_features)</span>
-<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>    test_labels <span class="op">=</span> label_encoder.transform(test_labels)</span>
-<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>    accuracy <span class="op">=</span> accuracy_score(test_labels, predictions)</span>
-<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>    precision <span class="op">=</span> precision_score(test_labels, predictions)</span>
-<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a>    recall <span class="op">=</span> recall_score(test_labels, predictions)</span>
-<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a>    f1 <span class="op">=</span> f1_score(test_labels, predictions)</span>
-<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a>    cm <span class="op">=</span> confusion_matrix(test_labels, predictions)</span>
-<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a>    plot_confusion_matrix(</span>
-<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a>        model, test_features, test_labels, display_labels<span class="op">=</span>label_encoder.classes_</span>
+<section id="ml-config" class="level2">
+<h2 class="anchored" data-anchor-id="ml-config">ML Config</h2>
+<p>ML parameters are another import set of values to be tracked. Each algorithm has it’s own parameters and our goal of our experiments is to find the parameters that works best for achieving our objective.</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode python cell-code code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>tracking_uri <span class="op">=</span> <span class="st">"http://localhost:5000"</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>experiment_name <span class="op">=</span> <span class="st">"attrition_rf"</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>sklearn_classifier <span class="op">=</span> RandomForestClassifier</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>model_params <span class="op">=</span> <span class="bu">dict</span>(n_estimators<span class="op">=</span><span class="dv">100</span>, criterion<span class="op">=</span><span class="st">"gini"</span>)</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>mlflow.set_tracking_uri(tracking_uri)</span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>mlflow.set_experiment(experiment_name)<span class="op">;</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
+<section id="experiments" class="level2">
+<h2 class="anchored" data-anchor-id="experiments">Experiments</h2>
+<p>This is an iterative step. Here we infuse the code with MLflow to allow us to record the data/ml parameters and metrics. The idea is to set the values in previous two cells (data and ml config) and run the experiment. The process is to be repeated until desired results are achieved.</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode python cell-code code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> mlflow.start_run() <span class="im">as</span> run:</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>    mlflow.log_param(<span class="st">"feature_encoder"</span>, feature_encoder.<span class="va">__name__</span>)</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>    mlflow.log_param(<span class="st">"feature_scaler"</span>, feature_scaler.<span class="va">__name__</span>)</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>    mlflow.log_param(<span class="st">"sklearn_classifier"</span>, sklearn_classifier.<span class="va">__name__</span>)</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>    mlflow.log_param(<span class="st">"test_size"</span>, test_size)</span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>    mlflow.log_params(model_params)</span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>    train_X, train_y, test_X, test_y <span class="op">=</span> split_data(</span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>        data, drop_cols<span class="op">=</span>drop_cols, label_col<span class="op">=</span>label_col, test_size<span class="op">=</span>test_size</span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>    model, labels_encoder, pipeline <span class="op">=</span> train(</span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>        train_X,</span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a>        train_y,</span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a>        feature_encoder,</span>
+<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a>        feature_scaler,</span>
+<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a>        sklearn_classifier,</span>
+<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a>        category_threshold,</span>
 <span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a>    )</span>
-<span id="cb5-18"><a href="#cb5-18" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> accuracy, precision, recall, f1, cm, plt</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</section>
-<section id="experiments" class="level4">
-<h4 class="anchored" data-anchor-id="experiments">Experiments</h4>
-<div class="sourceCode" id="cb6"><pre class="sourceCode python cell-code code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> run_experiment(experiment_name, <span class="op">**</span>parameters):</span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""Runs all the steps and logs experiment parameters using mlflow"""</span></span>
-<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">with</span> mlflow.start_run(run_name<span class="op">=</span>experiment_name) <span class="im">as</span> run:</span>
-<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>        run_id <span class="op">=</span> run.info.run_uuid</span>
-<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>        experiment_id <span class="op">=</span> run.info.experiment_id</span>
-<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>        <span class="bu">print</span>(<span class="ss">f"</span><span class="ch">\n</span><span class="ss">Run Id"</span>, run_id)</span>
-<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>        <span class="bu">print</span>(<span class="ss">f"Experiment Id"</span>, experiment_id)</span>
-<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>        data <span class="op">=</span> load_csv_data(<span class="st">"https://tinyurl.com/ibmhrattrition"</span>)</span>
-<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>        train_features, test_features, train_labels, test_labels <span class="op">=</span> split_data(data)</span>
-<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>        label_encoder, model <span class="op">=</span> train(train_features, train_labels, <span class="op">**</span>parameters)</span>
-<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>        mlflow.sklearn.log_model(model, <span class="st">"hr-attrition-model"</span>)</span>
-<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a>        mlflow.log_params(parameters)</span>
-<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a>        accuracy, precision, recall, f1, cm, plt_cm <span class="op">=</span> evaluate(</span>
-<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a>            model, label_encoder, test_features, test_labels</span>
-<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a>        )</span>
-<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a>        tp <span class="op">=</span> cm[<span class="dv">0</span>][<span class="dv">0</span>]</span>
-<span id="cb6-17"><a href="#cb6-17" aria-hidden="true" tabindex="-1"></a>        tn <span class="op">=</span> cm[<span class="dv">1</span>][<span class="dv">1</span>]</span>
-<span id="cb6-18"><a href="#cb6-18" aria-hidden="true" tabindex="-1"></a>        fp <span class="op">=</span> cm[<span class="dv">0</span>][<span class="dv">1</span>]</span>
-<span id="cb6-19"><a href="#cb6-19" aria-hidden="true" tabindex="-1"></a>        fn <span class="op">=</span> cm[<span class="dv">1</span>][<span class="dv">0</span>]</span>
-<span id="cb6-20"><a href="#cb6-20" aria-hidden="true" tabindex="-1"></a>        mlflow.log_metric(<span class="st">"TP"</span>, tp)</span>
-<span id="cb6-21"><a href="#cb6-21" aria-hidden="true" tabindex="-1"></a>        mlflow.log_metric(<span class="st">"TN"</span>, tn)</span>
-<span id="cb6-22"><a href="#cb6-22" aria-hidden="true" tabindex="-1"></a>        mlflow.log_metric(<span class="st">"FP"</span>, fp)</span>
-<span id="cb6-23"><a href="#cb6-23" aria-hidden="true" tabindex="-1"></a>        mlflow.log_metric(<span class="st">"FN"</span>, fn)</span>
-<span id="cb6-24"><a href="#cb6-24" aria-hidden="true" tabindex="-1"></a>        <span class="bu">print</span>(<span class="st">"accuracy_score"</span>, accuracy)</span>
-<span id="cb6-25"><a href="#cb6-25" aria-hidden="true" tabindex="-1"></a>        <span class="bu">print</span>(<span class="st">"precision_score"</span>, precision)</span>
-<span id="cb6-26"><a href="#cb6-26" aria-hidden="true" tabindex="-1"></a>        <span class="bu">print</span>(<span class="st">"recall_score"</span>, recall)</span>
-<span id="cb6-27"><a href="#cb6-27" aria-hidden="true" tabindex="-1"></a>        <span class="bu">print</span>(<span class="st">"f1_score"</span>, f1)</span>
-<span id="cb6-28"><a href="#cb6-28" aria-hidden="true" tabindex="-1"></a>        mlflow.log_metric(<span class="st">"accuracy_score"</span>, accuracy)</span>
-<span id="cb6-29"><a href="#cb6-29" aria-hidden="true" tabindex="-1"></a>        mlflow.log_metric(<span class="st">"precision_score"</span>, precision)</span>
-<span id="cb6-30"><a href="#cb6-30" aria-hidden="true" tabindex="-1"></a>        mlflow.log_metric(<span class="st">"recall_score"</span>, recall)</span>
-<span id="cb6-31"><a href="#cb6-31" aria-hidden="true" tabindex="-1"></a>        mlflow.log_metric(<span class="st">"f1_score"</span>, f1)</span>
-<span id="cb6-32"><a href="#cb6-32" aria-hidden="true" tabindex="-1"></a>        fig_name <span class="op">=</span> <span class="st">"confusion-matrix.png"</span></span>
-<span id="cb6-33"><a href="#cb6-33" aria-hidden="true" tabindex="-1"></a>        plt_cm.savefig(fig_name)</span>
-<span id="cb6-34"><a href="#cb6-34" aria-hidden="true" tabindex="-1"></a>        mlflow.log_artifact(fig_name, <span class="st">"confusion-matrix-plot"</span>)</span>
-<span id="cb6-35"><a href="#cb6-35" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> run_id, experiment_id</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="sourceCode" id="cb7"><pre class="sourceCode python cell-code code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co"># change parameters and run experiments</span></span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>run_experiment(</span>
-<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>    <span class="st">"hr-attrition-experiment"</span>, max_iter<span class="op">=</span><span class="dv">500</span>, activation<span class="op">=</span><span class="st">"relu"</span>, solver<span class="op">=</span><span class="st">"adam"</span></span>
-<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a><span class="co"># run_experiment("hr-attrition-experiment", max_iter=1000, activation="relu", solver="adam")</span></span>
-<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a><span class="co"># run_experiment("hr-attrition-experiment", max_iter=500, activation="relu", solver="sgd")</span></span>
-<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a><span class="co"># run_experiment("hr-attrition-experiment", max_iter=1000, activation="relu", solver="sgd")</span></span>
-<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a><span class="co"># run_experiment("hr-attrition-experiment", max_iter=500, activation="tanh", solver="sgd")</span></span>
-<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a><span class="co"># run_experiment("hr-attrition-experiment", max_iter=500, activation="tanh", solver="adam")</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</section>
-</section>
-<section id="predict" class="level3">
-<h3 class="anchored" data-anchor-id="predict">Predict</h3>
-<div class="sourceCode" id="cb8"><pre class="sourceCode python cell-code code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>data <span class="op">=</span> load_csv_data(<span class="st">"https://tinyurl.com/ibmhrattrition"</span>)</span>
-<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>train_features, test_features, train_labels, test_labels <span class="op">=</span> split_data(data)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="sourceCode" id="cb9"><pre class="sourceCode python cell-code code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>data.head()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="sourceCode" id="cb10"><pre class="sourceCode python cell-code code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> predict(features):</span>
-<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>    run_id <span class="op">=</span> <span class="st">"72a2690bd0c24316984f4e2f9e49f3bd"</span></span>
-<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>    logged_model <span class="op">=</span> <span class="ss">f"file:///content/mlruns/0/</span><span class="sc">{</span>run_id<span class="sc">}</span><span class="ss">/artifacts/hr-attrition-model"</span></span>
-<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>    loaded_model <span class="op">=</span> mlflow.pyfunc.load_model(logged_model)</span>
-<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>    response <span class="op">=</span> loaded_model.predict(pd.DataFrame(features))</span>
-<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="st">"No"</span> <span class="cf">if</span> response[<span class="dv">0</span>] <span class="op">==</span> <span class="dv">0</span> <span class="cf">else</span> <span class="st">"Yes"</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="sourceCode" id="cb11"><pre class="sourceCode python cell-code code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>test_features</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="sourceCode" id="cb12"><pre class="sourceCode python cell-code code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>sample_features <span class="op">=</span> test_features.loc[[<span class="dv">1023</span>]]</span>
-<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>sample_features</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="sourceCode" id="cb13"><pre class="sourceCode python cell-code code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>predict(sample_features)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="sourceCode" id="cb14"><pre class="sourceCode python cell-code code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>test_labels.loc[[<span class="dv">1023</span>]]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb5-18"><a href="#cb5-18" aria-hidden="true" tabindex="-1"></a>    mlflow.sklearn.log_model(model, <span class="st">"hr-attrition-model"</span>)</span>
+<span id="cb5-19"><a href="#cb5-19" aria-hidden="true" tabindex="-1"></a>    accuracy, precision, recall, f1, cm, plt_cm <span class="op">=</span> evaluate(</span>
+<span id="cb5-20"><a href="#cb5-20" aria-hidden="true" tabindex="-1"></a>        model, labels_encoder, test_X, test_y</span>
+<span id="cb5-21"><a href="#cb5-21" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb5-22"><a href="#cb5-22" aria-hidden="true" tabindex="-1"></a>    tp <span class="op">=</span> cm[<span class="dv">0</span>][<span class="dv">0</span>]</span>
+<span id="cb5-23"><a href="#cb5-23" aria-hidden="true" tabindex="-1"></a>    tn <span class="op">=</span> cm[<span class="dv">1</span>][<span class="dv">1</span>]</span>
+<span id="cb5-24"><a href="#cb5-24" aria-hidden="true" tabindex="-1"></a>    fp <span class="op">=</span> cm[<span class="dv">0</span>][<span class="dv">1</span>]</span>
+<span id="cb5-25"><a href="#cb5-25" aria-hidden="true" tabindex="-1"></a>    fn <span class="op">=</span> cm[<span class="dv">1</span>][<span class="dv">0</span>]</span>
+<span id="cb5-26"><a href="#cb5-26" aria-hidden="true" tabindex="-1"></a>    mlflow.log_metric(<span class="st">"TP"</span>, tp)</span>
+<span id="cb5-27"><a href="#cb5-27" aria-hidden="true" tabindex="-1"></a>    mlflow.log_metric(<span class="st">"TN"</span>, tn)</span>
+<span id="cb5-28"><a href="#cb5-28" aria-hidden="true" tabindex="-1"></a>    mlflow.log_metric(<span class="st">"FP"</span>, fp)</span>
+<span id="cb5-29"><a href="#cb5-29" aria-hidden="true" tabindex="-1"></a>    mlflow.log_metric(<span class="st">"FN"</span>, fn)</span>
+<span id="cb5-30"><a href="#cb5-30" aria-hidden="true" tabindex="-1"></a>    mlflow.log_metric(<span class="st">"accuracy_score"</span>, accuracy)</span>
+<span id="cb5-31"><a href="#cb5-31" aria-hidden="true" tabindex="-1"></a>    mlflow.log_metric(<span class="st">"precision_score"</span>, precision)</span>
+<span id="cb5-32"><a href="#cb5-32" aria-hidden="true" tabindex="-1"></a>    mlflow.log_metric(<span class="st">"recall_score"</span>, recall)</span>
+<span id="cb5-33"><a href="#cb5-33" aria-hidden="true" tabindex="-1"></a>    mlflow.log_metric(<span class="st">"f1_score"</span>, f1)</span>
+<span id="cb5-34"><a href="#cb5-34" aria-hidden="true" tabindex="-1"></a>    fig_name <span class="op">=</span> <span class="st">"confusion-matrix.png"</span></span>
+<span id="cb5-35"><a href="#cb5-35" aria-hidden="true" tabindex="-1"></a>    plt_cm.savefig(fig_name)</span>
+<span id="cb5-36"><a href="#cb5-36" aria-hidden="true" tabindex="-1"></a>    mlflow.log_artifact(fig_name, <span class="st">"confusion-matrix-plot"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 
 
-</section>
 </section>
 <script type="application/javascript">
 window.document.addEventListener("DOMContentLoaded", function (event) {
