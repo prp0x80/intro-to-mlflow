@@ -162,7 +162,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./03_setup_mlflow.html" class="sidebar-item-text sidebar-link active">MLflow Set Up</a>
+  <a href="./03_mlflow_setup.html" class="sidebar-item-text sidebar-link active">MLflow Set Up</a>
   </div>
 </li>
         <li class="sidebar-item">
@@ -227,13 +227,33 @@ Note
 <p>Make sure you have created and activated the virtual environment using the python virtual environment manager of your choice.</p>
 </div>
 </div>
-<div class="cell" data-vscode="{&quot;languageId&quot;:&quot;shellscript&quot;}">
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="op">!</span>pip install <span class="op">--</span>upgrade pip</span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="op">!</span>pip install <span class="op">--</span>quiet mlflow</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
+<div class="sourceCode" id="cb1"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ex">pip</span> install <span class="at">--upgrade</span> pip</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="ex">pip</span> install <span class="at">--quiet</span> mlflow</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>MLflow comes with a rich CLI that provides a simple interface to various functionality in MLflow. You can use the CLI to run projects, start the tracking UI, create and list experiments, download run artifacts, serve MLflow Python Function and scikit-learn models, and serve models on Microsoft Azure Machine Learning and Amazon SageMaker.</p>
-<div class="cell" data-vscode="{&quot;languageId&quot;:&quot;shellscript&quot;}">
+<div class="cell" data-vscode="{&quot;languageId&quot;:&quot;shellscript&quot;}" data-execution_count="1">
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="op">!</span>mlflow <span class="op">--</span><span class="bu">help</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Usage: mlflow [OPTIONS] COMMAND [ARGS]...
+
+Options:
+  --version  Show the version and exit.
+  --help     Show this message and exit.
+
+Commands:
+  artifacts    Upload, list, and download artifacts from an MLflow...
+  azureml      Serve models on Azure ML.
+  db           Commands for managing an MLflow tracking database.
+  deployments  Deploy MLflow models to custom targets.
+  experiments  Manage experiments.
+  gc           Permanently delete runs in the `deleted` lifecycle stage.
+  models       Deploy MLflow models locally.
+  pipelines    Run MLflow Pipelines and inspect pipeline results.
+  run          Run an MLflow project from the given URI.
+  runs         Manage runs.
+  sagemaker    Serve models on SageMaker.
+  server       Run the MLflow tracking server.
+  ui           Launch the MLflow tracking UI for local viewing of run...</code></pre>
+</div>
 </div>
 <p>In the next section, we will use <code>mlflow server &lt;args&gt;</code> and <code>mlflow ui</code> commands to demonstrate different MLflow set up scenarios.</p>
 </section>
@@ -247,7 +267,7 @@ Note
 </blockquote>
 <p>This is the most basic set up, where both backend and artifact store are set to local file store. It’s the default mode, so we don’t have to set any parameters while starting the tracking server.</p>
 <p>Start MLflow tracking server without any arguments as follows:</p>
-<div class="sourceCode" id="cb3"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="ex">mlflow</span> server</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb4"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="ex">mlflow</span> server</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
 <p><img src="./images/scenario1.png" class="img-fluid figure-img"></p>
@@ -261,8 +281,8 @@ Note
 </blockquote>
 <p>In this case, artifacts are stored under a local directory, and MLflow entities are inserted in a SQLite database file <code>mlruns.db</code>.</p>
 <p>Start MLflow tracking server by specifying appropriate values for <code>--backend-store-uri</code> and <code>--default-artifact-root</code> as follows:</p>
-<div class="sourceCode" id="cb4"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="ex">mlflow</span> server <span class="at">--backend-store-uri</span> sqlite:////workspace/mlruns.db <span class="dt">\</span></span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>              <span class="at">--default-artifact-root</span> /workspace/mlruns</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb5"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="ex">mlflow</span> server <span class="at">--backend-store-uri</span> sqlite:////workspace/mlruns.db <span class="dt">\</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>              <span class="at">--default-artifact-root</span> /workspace/mlruns</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
 <p><img src="./images/scenario2.png" class="img-fluid figure-img"></p>
@@ -276,18 +296,38 @@ Note
 </blockquote>
 <p>Similar to scenario 1 but a tracking server is launched, listening for REST request calls at the default port 5000.</p>
 <p>Start MLflow tracking server by specifying local file path value for <code>--backend-store-uri</code> as follows:</p>
-<div class="sourceCode" id="cb5"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="ex">mlflow</span> server <span class="at">--backend-store-uri</span> /workspace/mlruns</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb6"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="ex">mlflow</span> server <span class="at">--backend-store-uri</span> /workspace/mlruns</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
 <p><img src="./images/scenario3.png" class="img-fluid figure-img"></p>
 </figure>
+</div>
+<div class="callout-note callout callout-style-default callout-captioned">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-caption-container flex-fill">
+Note
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>To make the CLI commands aware of the tracking server set the <code>MLFLOW_TRACKING_URI</code> environment variable as follows:</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="bu">export</span> <span class="va">MLFLOW_TRACKING_URI</span><span class="op">=</span><span class="st">"http://localhost:5000"</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
 </div>
 </section>
 </section>
 <section id="mlflow-tracking-ui" class="level2">
 <h2 class="anchored" data-anchor-id="mlflow-tracking-ui">MLflow Tracking UI</h2>
 <p>After the tracking server is up using the scenario of choice, you can launch MLflow tracking UI by typing <code>http://localhost:5000</code> in the browser.</p>
-<p>MLFlow Tracking UI is in constant communication with the tracking server to present the results of each experiment from the set storage location. It also, allows to compare results across runs and experiments.</p>
+<p>MLFlow Tracking UI is in constant communication with the tracking server to present the results of each experiment from the set storage location. The UI contains the following key features:</p>
+<ul>
+<li>Experiment-based run listing and comparison (including run comparison across multiple experiments)</li>
+<li>Searching for runs by parameter or metric value</li>
+<li>Visualizing run metrics</li>
+<li>Downloading run results</li>
+</ul>
 <p><img src="./images/mlflow_ui.png" class="img-fluid"></p>
 
 
