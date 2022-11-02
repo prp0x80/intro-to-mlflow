@@ -16,8 +16,19 @@ jobs:
       run: |
         pip install -r requirements.txt
         
-    - name: "Install Quarto and render"
-      uses: pommevilla/quarto-render@main
+    - name: "Install Quarto"
+      shell: bash
+      run: |
+        quarto_version="1.2.258"
+        quarto_file_name="quarto-${quarto_version}-linux-amd64.deb"
+        quarto_url="https://github.com/quarto-dev/quarto-cli/releases/download/v${quarto_version}/${quarto_file_name}"
+        wget -q "${quarto_url}"
+        sudo dpkg -i "${quarto_file_name}"
+    
+    - name: "Render Quarto Docs"
+      shell: bash
+      run: |
+        quarto render .
 
     - name: "Deploy to gh-pages"
       uses: peaceiris/actions-gh-pages@v3
