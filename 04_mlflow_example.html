@@ -200,6 +200,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
   <ul class="collapse">
   <li><a href="#mlflow-model-serving" id="toc-mlflow-model-serving" class="nav-link" data-scroll-target="#mlflow-model-serving">MLflow Model Serving</a></li>
   </ul></li>
+  <li><a href="#excercise" id="toc-excercise" class="nav-link" data-scroll-target="#excercise">Excercise</a></li>
+  <li><a href="#further-reading" id="toc-further-reading" class="nav-link" data-scroll-target="#further-reading">Further Reading</a></li>
   </ul>
 <div class="toc-actions"><div><i class="bi bi-github"></i></div><div class="action-links"><p><a href="https://github.dev/prp0x80/intro-to-mlflow/blob/main/04_mlflow_example.ipynb" class="toc-action">Edit this page</a></p><p><a href="https://github.com/prp0x80/intro-to-mlflow/issues/new" class="toc-action">Report an issue</a></p></div></div></nav>
     </div>
@@ -233,7 +235,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <section id="import-libraries" class="level3">
 <h3 class="anchored" data-anchor-id="import-libraries">Import libraries</h3>
 <p>MLflow supports wide variety of ML frameworks. For this example we will use the simple and popular <code>sklearn</code> library for training a model. Additionally, for clarity, we have abstracted the steps for ML classification into a <code>kainos_sklearn</code> package.</p>
-<div class="cell" data-execution_count="71">
+<div class="cell" data-execution_count="79">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> warnings</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> mlflow</span>
@@ -256,7 +258,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <section id="load-data" class="level3">
 <h3 class="anchored" data-anchor-id="load-data">Load data</h3>
 <p>The hr attrition data is available in csv format, so we can easily load it into a pandas dataframe.</p>
-<div class="cell" data-execution_count="72">
+<div class="cell" data-execution_count="80">
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>data <span class="op">=</span> load_csv(<span class="st">"./data/hr_attrition.csv"</span>)</span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>n_rows, n_cols <span class="op">=</span> data.shape</span>
@@ -269,7 +271,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <section id="data-config" class="level3">
 <h3 class="anchored" data-anchor-id="data-config">Data Config</h3>
 <p>The outcome of machine learning algorithm also depends on the tuning we apply to the data, hence it’s important to keep a track of those too.</p>
-<div class="cell" data-execution_count="73">
+<div class="cell" data-execution_count="81">
 <div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>drop_cols <span class="op">=</span> [</span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>    <span class="st">"EmployeeNumber"</span>,</span>
 <span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>    <span class="st">"EmployeeCount"</span>,</span>
@@ -481,9 +483,32 @@ f1_score: 0.29</code></pre>
 <span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a>prediction <span class="op">=</span> response.text</span>
 <span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(prediction)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-
-
 </section>
+</section>
+<section id="excercise" class="level2">
+<h2 class="anchored" data-anchor-id="excercise">Excercise</h2>
+<ul>
+<li>Run more experiments [Update same notebook]
+<ul>
+<li>Try few more sklearn classifier models on the attrition data and see if you are able to get better f1-score</li>
+<li>Check if you are able to compare results across experiments</li>
+<li>Register the model that gave you the best f1-score</li>
+</ul></li>
+<li>Update your ML training code to use MLflow for tracking experiments [Create new notebook]
+<ul>
+<li>Make this part of the <code>intro-to-mlflow</code> repository you forked on Github</li>
+<li>Register the model and create multiple version</li>
+<li>Serve the model using <code>mlflow serve</code> cli and send a <code>POST</code> request to the <code>REST API</code></li>
+</ul></li>
+</ul>
+</section>
+<section id="further-reading" class="level2">
+<h2 class="anchored" data-anchor-id="further-reading">Further Reading</h2>
+<ul>
+<li><a href="https://martinfowler.com/articles/cd4ml.html">Continuous Delivery for Machine Learning</a></li>
+</ul>
+
+
 </section>
 
 </main> <!-- /main -->
